@@ -6,13 +6,13 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 16:44:53 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/05/24 19:10:10 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/05/25 11:23:27 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
 
-void	ft_initargcontent(t_argcontent *argcontent)
+void			ft_initargcontent(t_argcontent *argcontent)
 {
 	argcontent->precision = 0;
 	argcontent->width = 0;
@@ -23,7 +23,7 @@ void	ft_initargcontent(t_argcontent *argcontent)
 	argcontent->point = 0;
 }
 
-void	ft_getflags(t_argcontent *argcontent, char *spec, int *i)
+void			ft_getflags(t_argcontent *argcontent, char *spec, int *i)
 {
 	while (spec[*i] && (spec[*i] <= '0' || spec[*i] > '9') && spec[*i] != '.')
 	{
@@ -39,14 +39,15 @@ void	ft_getflags(t_argcontent *argcontent, char *spec, int *i)
 	}
 }
 
-void	ft_getwpm(t_argcontent *argcontent, char *spec, int *i)
+void			ft_getwpm(t_argcontent *argcontent, char *spec, int *i)
 {
-	while (spec[*i] && spec[*i] != '.' && spec[*i] >= '0' && spec[*i] <= '9')
+	while (spec[*i] && spec[*i] != '.' && spec[*i] >= '0'
+	&& spec[(*i)] <= '9')
 	{
 		argcontent->width = argcontent->width * 10 + (spec[*i] - '0');
 		(*i)++;
 	}
-	if (spec[*i] == '.')
+	if (spec[(*i)] == '.')
 	{
 		argcontent->point = 1;
 		(*i)++;
@@ -71,10 +72,10 @@ void	ft_getwpm(t_argcontent *argcontent, char *spec, int *i)
 		argcontent->modificator[1] = '\0';
 }
 
-t_argcontent	ft_getargcontent(char *spec) // spec length
+t_argcontent	ft_getargcontent(char *spec)
 {
 	t_argcontent	argcontent;
-	int		i;
+	int				i;
 
 	i = 0;
 	argcontent.length = ft_strlen(spec) + 1;
@@ -85,7 +86,6 @@ t_argcontent	ft_getargcontent(char *spec) // spec length
 		ft_getwpm(&argcontent, spec, &i);
 	}
 	argcontent.type = spec[i - 1];
-	// printf("minus = %d\nplus = %d\nzero = %d\nhash = %d\nwidth = %lld\nprecision = %lld\nmodificator = %s\n", argcontent.minus, argcontent.plus, argcontent.zero, argcontent.hash, argcontent.width, argcontent.precision, argcontent.modificator);
 	return (argcontent);
 }
 
