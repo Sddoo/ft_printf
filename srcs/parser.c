@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 16:44:53 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/05/25 11:23:27 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/13 17:40:43 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,10 @@ void			ft_initargcontent(t_argcontent *argcontent)
 	argcontent->plus = 0;
 	argcontent->zero = 0;
 	argcontent->point = 0;
+	argcontent->space = 0;
 }
 
-void			ft_getflags(t_argcontent *argcontent, char *spec, int *i)
+void			ft_initflags(t_argcontent *argcontent, char *spec, int *i)
 {
 	while (spec[*i] && (spec[*i] <= '0' || spec[*i] > '9') && spec[*i] != '.')
 	{
@@ -35,11 +36,13 @@ void			ft_getflags(t_argcontent *argcontent, char *spec, int *i)
 			argcontent->minus = 1;
 		else if (spec[*i] == '+')
 			argcontent->plus = 1;
+		else if (spec[*i] == ' ')
+			argcontent->space = 1;
 		(*i)++;
 	}
 }
 
-void			ft_getwpm(t_argcontent *argcontent, char *spec, int *i)
+void			ft_initwpm(t_argcontent *argcontent, char *spec, int *i)
 {
 	while (spec[*i] && spec[*i] != '.' && spec[*i] >= '0'
 	&& spec[(*i)] <= '9')
@@ -82,8 +85,8 @@ t_argcontent	ft_getargcontent(char *spec)
 	ft_initargcontent(&argcontent);
 	while (spec[i])
 	{
-		ft_getflags(&argcontent, spec, &i);
-		ft_getwpm(&argcontent, spec, &i);
+		ft_initflags(&argcontent, spec, &i);
+		ft_initwpm(&argcontent, spec, &i);
 	}
 	argcontent.type = spec[i - 1];
 	return (argcontent);
@@ -95,17 +98,17 @@ t_argcontent	ft_parser(char *format, long long i)
 	long long	begin;
 	long long	newi;
 
-	begin = i;
+	begin = ++i;
 	newi = 0;
 	while (format[begin] && format[begin] != 'c' && format[begin] != 's'
 	&& format[begin] != 'p' && format[begin] != 'd'
 	&& format[begin] != 'i' && format[begin] != 'o'
 	&& format[begin] != 'u' && format[begin] != 'x'
-	&& format[begin] != 'X' && format[begin] != 'f')
+	&& format[begin] != 'X' && format[begin] != 'f'
+	&& format[begin] != '%')
 		begin++;
 	if (!(spec = (char*)malloc(begin - i + 1)))
 		exit(0);
-	i++;
 	while (format[i] && i <= begin)
 		spec[newi++] = format[i++];
 	spec[newi] = '\0';

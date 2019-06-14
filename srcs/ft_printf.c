@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 16:39:04 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/05/24 12:12:21 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/14 19:59:46 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,25 +17,25 @@ int		ft_printf(char *format, ...)
 	va_list				ap;
 	t_argcontent		argcontent;
 	long long			i;
+	int					res;
 
 	i = 0;
+	res = 0;
 	va_start(ap, format);
 	while (format[i])
 	{
-		if (format[i] == '%' && format[i + 1] != '%')
+		if (format[i] == '%')
 		{
 			argcontent = ft_parser(format, i);
 			i += argcontent.length;
-			ft_putarg(argcontent, ap);
-		}
-		else if (format[i] == '%' && format[i + 1] == '%')
-		{
-			ft_putchar('%');
-			i += 2;
+			res += ft_putarg(argcontent, ap);
 		}
 		else
+		{
 			ft_putchar(format[i++]);
+			res++;
+		}
 	}
 	va_end(ap);
-	return (1);
+	return (res);
 }
