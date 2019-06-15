@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 20:01:52 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/14 20:00:00 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/15 13:56:21 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,12 +48,14 @@ int		ft_putarg(t_argcontent argcontent, va_list ap)
 		{
 			if (!(ft_strcmp(argcontent.modificator, "ll")))
 				return(ft_putlong(argcontent, va_arg(ap, long long)));
-			else if (!(ft_strcmp(argcontent.modificator, "l")))
+			else if (!ft_strcmp(argcontent.modificator, "l") || argcontent.type == 'p')
 				return(ft_putlong(argcontent, va_arg(ap, long)));
-			else if (!(ft_strcmp(argcontent.modificator, "ll")) && argcontent.type == 'u')
+			else if (!ft_strcmp(argcontent.modificator, "ll") && argcontent.type == 'u')
 				return(ft_putlong(argcontent, va_arg(ap, unsigned long long)));
-			else
+			else if (!ft_strcmp(argcontent.modificator, ""))
 				return(ft_putlong(argcontent, va_arg(ap, int)));
+			else
+				return(-1);
 		}
 	else if (argcontent.type == 's')
 		return(ft_putstring(argcontent, va_arg(ap, char*)));

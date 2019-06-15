@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/25 10:49:06 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/14 20:01:32 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/15 13:18:19 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,15 +46,14 @@ char	*ft_gethexstr(long long arg, char c, char *modificator)
 	unsigned long long	help;
 	unsigned long long	uarg;
 
-	i = 0;
-	uarg = arg;
+	i = 0;	
 	if (!arg)
 		return ("0");
-	else if (arg < 0 && !ft_strcmp(modificator, "hh"))
+	if (arg < 0 && !ft_strcmp(modificator, "hh"))
 		uarg = 255 + arg + 1;
 	else if (arg < 0 && ft_strcmp(modificator, "ll") && ft_strcmp(modificator, "l"))
 		uarg = 4294967295 + arg + 1;
-	else if (arg < 0)
+	else
 		uarg = (unsigned long long)(18446744073709551615U + arg + 1);
 	help = uarg;
 	while (uarg)

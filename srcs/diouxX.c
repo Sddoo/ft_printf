@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/25 10:42:59 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/14 19:37:00 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/15 13:48:36 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,6 @@ int		ft_putd(t_argcontent argcontent, long long arg)
 	size = 0;
 	res = 0;
 	uarg = arg;
-	
 	if (argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, "")) // сделать обработку ll, hh...
 		uarg = (unsigned int)arg;
 	else if (argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, "l"))

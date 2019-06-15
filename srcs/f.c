@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 17:04:09 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/13 12:12:40 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/15 13:58:59 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ char	*ft_ftoa(t_argcontent ac, float arg)
 	char	*res;
 
 	h = 0.0;
-	leftpart = (long long int)arg;
+	leftpart = (__int128_t)arg;
 	arg -= leftpart;
 	res = ft_strjoin(ft_itoa_big(leftpart), ft_getfloatpart_r(ac, arg));
 	return(res);
