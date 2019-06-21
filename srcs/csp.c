@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/25 10:41:52 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/21 04:52:51 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/21 06:21:29 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,11 +35,17 @@ int		ft_putstring(t_argcontent argcontent, char *arg)
 {
 	long long	i;
 	char		*newstr;
+	char		c;
 
 	if (!arg)
 		newstr = ft_strdup("(null)");
 	else
 		newstr = ft_strdup(arg);
+	i = 0;
+	if (argcontent.zero)
+		c = '0';
+	else
+		c = ' ';
 	i = 0;
 	if ((long long)ft_strlen(newstr) > argcontent.precision && argcontent.point)
 		newstr[argcontent.precision] = '\0';
@@ -47,7 +53,7 @@ int		ft_putstring(t_argcontent argcontent, char *arg)
 	if (argcontent.minus)
 		ft_putstr(newstr);
 	while (i++ < argcontent.width)
-		ft_putchar(' ');
+		ft_putchar(c);
 	if (!argcontent.minus)
 		ft_putstr(newstr);
 	return (i - 1);
@@ -67,6 +73,11 @@ int		ft_putp(t_argcontent argcontent, long long arg)
 		ft_putstr("0x");
 		if ((argcontent.point && argcontent.precision) || !argcontent.point)
 			ft_putstr(res);
+		while (i - 2 < argcontent.precision)
+		{
+			ft_putchar('0');
+			i++;
+		}
 	}
 	while (i < argcontent.width)
 	{
@@ -78,6 +89,11 @@ int		ft_putp(t_argcontent argcontent, long long arg)
 		ft_putstr("0x");
 		if ((argcontent.point && argcontent.precision) || !argcontent.point)
 			ft_putstr(res);
+		while (i - 2 < argcontent.precision)
+		{
+			ft_putchar('0');
+			i++;
+		}
 	}
 	return (i);
 }

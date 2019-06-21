@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/06/18 16:59:34 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/21 04:46:33 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/21 06:27:49 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_putplus(t_argcontent *argcontent, long long *arg)
 		*arg *= -1;
 		argcontent->plus = 0;
 	}
-	else if (argcontent->plus)
+	else if (argcontent->plus && argcontent->type != 'o')
 	{
 		ft_putchar('+');
 		argcontent->plus = 0;

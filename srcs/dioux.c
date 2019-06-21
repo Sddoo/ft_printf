@@ -6,7 +6,7 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/25 10:42:59 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/21 05:47:06 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/21 06:29:56 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	ft_putminusd_flag(t_argcontent argcontent, long long *i, long long size,
 		ft_putchar('-');
 		(*i)++;
 	}
-	else if (argcontent.plus && *arg >= 0 && argcontent.type != 'u')
+	else if (argcontent.plus && *arg >= 0 && argcontent.type != 'u' && argcontent.type != 'o')
 		ft_putchar('+');
 	ft_puthashd(argcontent, i, arg);
 	while (*i < argcontent.precision - size)
@@ -30,7 +30,7 @@ void	ft_putminusd_flag(t_argcontent argcontent, long long *i, long long size,
 		ft_putchar('0');
 		(*i)++;
 	}
-	if (argcontent.plus && *arg >= 0)
+	if (argcontent.plus && *arg >= 0 && argcontent.type != 'o')
 		(*i)++;
 }
 
@@ -100,19 +100,21 @@ void	ft_inittype(t_argcontent argcontent,
 unsigned long long *uarg, long long *arg)
 {
 	*uarg = *arg;
-	if ((((argcontent.type == 'x' || argcontent.type == 'X') && (*arg <= -4294967296 || *arg > 4294967295)))
+	if ((((argcontent.type == 'x' || argcontent.type == 'X' || argcontent.type == 'o') && (*arg <= -4294967296 || *arg > 4294967295)))
 	&& (!ft_strcmp(argcontent.modificator, "hh") || !ft_strcmp(argcontent.modificator, "h") || !ft_strcmp(argcontent.modificator, "")))
 		*arg = (int)*arg;
 	else if (argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, ""))
 		*uarg = (unsigned int)*arg;
 	else if (argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, "l"))
 		*uarg = (unsigned long)*arg;
-	else if (argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, "h"))
+	else if ((argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, "h")))
 		*uarg = (unsigned short)*arg;
 	else if (argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, "hh"))
 		*uarg = (unsigned char)*arg;
 	else if (argcontent.type == 'u' && !ft_strcmp(argcontent.modificator, "ll"))
 		*uarg = (unsigned long long)(18446744073709551615U + *arg + 1);
+	else if (((argcontent.type == 'o' || argcontent.type == 'x' || argcontent.type == 'X') && !ft_strcmp(argcontent.modificator, "h")) && (*arg > 32767 || *arg < -32767))
+		*arg = (unsigned short)*arg;
 	else if (!ft_strcmp(argcontent.modificator, "ll"))
 		*arg = (long long int)*arg;
 	else if (!ft_strcmp(argcontent.modificator, "h"))
@@ -163,7 +165,7 @@ unsigned long long *uarg, char *hex)
 void	ft_putflags(t_argcontent argcontent, long long *i,
 int size, long long *arg)
 {
-	if (argcontent.space && !argcontent.plus && *arg >= 0 && argcontent.type != 'u')
+	if (argcontent.space && !argcontent.plus && *arg >= 0 && argcontent.type != 'u' && argcontent.type != 'o')
 	{
 		ft_putchar(' ');
 		(*i)++;
@@ -176,7 +178,7 @@ int size, long long *arg)
 		ft_putwpd_flags(argcontent, i, size, arg);
 	else if (argcontent.hash && *arg)
 		ft_puthashd(argcontent, i, arg);
-	else if (argcontent.plus && *arg >= 0 && argcontent.type != 'u')
+	else if (argcontent.plus && *arg >= 0 && argcontent.type != 'u' && argcontent.type != 'o')
 		ft_putchar('+');
 }
 
