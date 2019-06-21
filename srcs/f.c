@@ -6,123 +6,121 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/28 17:04:09 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/15 13:58:59 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/18 16:28:56 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
 
-int		ft_getfloatsize_l(float arg)
+char	*ft_getbeforefloat(t_argcontent argcontent, int size)
 {
-	int		res;
-
-	res = 0;
-	while (arg >= 1)
-	{
-		res++;
-		arg /= 10;
-	}
-	res = (!res) ? 1 : res;
-	return(res);
-}
-
-char	ft_getfloatchar_r(float *arg)
-{
-	int		h;
-
-	*arg *= 10;
-	h = (int)*arg;
-	*arg -= h;
-	return (h + '0');
-}
-
-char	*ft_getfloatpart_r(t_argcontent argcontent, float arg)
-{
-	char	*res;
 	int		i;
-	int		rightsize;
+	char	*res;
 
-	if (!argcontent.precision && argcontent.point && !argcontent.hash)
-		return ("");
 	i = 0;
-	rightsize = (argcontent.precision) ? argcontent.precision : 6;
-	if (!(res = (char*)malloc(rightsize + 2)))
-		return(0);
-	res[i++] = '.';
-	if (argcontent.hash)
-	{
-		res[i] = '\0';
-		return (res);
-	}
-	res[rightsize + 1] = '\0';
-	while (rightsize--)
-	{
-		res[i] = ft_getfloatchar_r(&arg);
-		i++;
-	}
-	return(res);
+	if (!(res = (char*)malloc(argcontent.width - size + 1)))
+		return (NULL);
+	if (argcontent.zero)
+		while (argcontent.width - size > 0)
+		{
+			res[i++] = '0';
+			size++;
+		}
+	else
+		while (argcontent.width - size > 0)
+		{
+			res[i++] = ' ';
+			size++;
+		}
+	res[i] = '\0';
+	return (res);
 }
 
-char	*ft_beforefloat(t_argcontent argcontent, float arg)
+char	*ft_beforefloat(t_argcontent argcontent, long double arg)
 {
 	int		size;
 	char	*res;
 	int		i;
 
 	i = 0;
+	size = 1;
 	if (!argcontent.precision && !argcontent.point)
-		argcontent.precision = 7; // 6 + 1 за точку и Сашку
-	size = ft_getfloatsize_l(arg) + argcontent.precision;
+		size += 6;
+	else if (argcontent.precision == 0)
+		size--;
+	size += ft_getfloatsize_l(arg) + argcontent.precision;
 	if (!argcontent.minus && size < argcontent.width)
-	{
-		if (!(res = (char*)malloc(argcontent.width - size + 1)))
-			return(NULL);
-		if (argcontent.zero)
-			while (argcontent.width - size > 0)
-			{
-				res[i++] = '0';
-				size++;
-			}
-		else
-			while (argcontent.width - size - 1 > 0)
-			{
-				res[i++] = ' ';
-				size++;
-			}
-		return(res);
-	}
+		res = ft_getbeforefloat(argcontent, size);
 	else
-		return("");
+		return ("");
+	return (res);
 }
 
-char	*ft_ftoa(t_argcontent ac, float arg)
+int		ft_putf(t_argcontent argcontent, double arg)
 {
-	float	h;
-	float	leftpart;
-	char	*res;
+	char		*res;
+	int			size;
+
+	size = 0;
+	res = ft_strjoin(ft_beforefloat(argcontent, arg), ft_ftoa(argcontent, arg));
+	ft_putstr(res);
+	if (argcontent.minus)
+	{
+		size = 1;
+		if (!argcontent.precision && !argcontent.point)
+			size += 6;
+		if (argcontent.precision == 0)
+			size--;
+		size += ft_getfloatsize_l(arg) + argcontent.precision;
+		if (argcontent.minus && argcontent.width - size > 0)
+			while (argcontent.width - size > 0)
+			{
+				ft_putchar(' ');
+				size++;
+			}
+	}
+	else
+		size += ft_strlen(res);
+	return (size);
+}
+
+char	*ft_ftoa(t_argcontent ac, long double arg)
+{
+	long double	h;
+	long double	leftpart;
+	char		*res;
 
 	h = 0.0;
 	leftpart = (__int128_t)arg;
 	arg -= leftpart;
 	res = ft_strjoin(ft_itoa_big(leftpart), ft_getfloatpart_r(ac, arg));
-	return(res);
+	return (res);
 }
 
-int		ft_putf(t_argcontent argcontent, float arg)
+int		ft_putlf(t_argcontent argcontent, long double arg)
 {
-	char	*res;
-	int		size;
+	char		*res;
+	int			size;
 
 	size = 0;
 	res = ft_strjoin(ft_beforefloat(argcontent, arg), ft_ftoa(argcontent, arg));
 	ft_putstr(res);
-	if (!argcontent.precision && !argcontent.point)
-		argcontent.precision = 7; // 6 + 1 за точку и Сашку
-	if (argcontent.minus && argcontent.width - size > 0)
-		while (argcontent.width - size > 0)
-		{
-			ft_putchar(' ');
-			size++;
-		}
-	return (ft_strlen(res) + size);
+	if (argcontent.minus)
+	{
+		size = 1;
+		if (!argcontent.precision && !argcontent.point)
+			size += 6;
+		if (argcontent.precision == 0)
+			size--;
+		size += ft_getfloatsize_l(arg) + argcontent.precision;
+		if (argcontent.minus && argcontent.width - size > 0)
+			while (argcontent.width - size > 0)
+			{
+				ft_putchar(' ');
+				size++;
+			}
+	}
+	else
+		size += ft_strlen(res);
+	return (size);
 }

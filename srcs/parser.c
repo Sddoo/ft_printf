@@ -6,23 +6,11 @@
 /*   By: hfrankly <hfrankly@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/21 16:44:53 by hfrankly          #+#    #+#             */
-/*   Updated: 2019/06/13 17:40:43 by hfrankly         ###   ########.fr       */
+/*   Updated: 2019/06/21 02:34:16 by hfrankly         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libftprintf.h"
-
-void			ft_initargcontent(t_argcontent *argcontent)
-{
-	argcontent->precision = 0;
-	argcontent->width = 0;
-	argcontent->hash = 0;
-	argcontent->minus = 0;
-	argcontent->plus = 0;
-	argcontent->zero = 0;
-	argcontent->point = 0;
-	argcontent->space = 0;
-}
 
 void			ft_initflags(t_argcontent *argcontent, char *spec, int *i)
 {
@@ -40,6 +28,25 @@ void			ft_initflags(t_argcontent *argcontent, char *spec, int *i)
 			argcontent->space = 1;
 		(*i)++;
 	}
+}
+
+void			ft_getmodif(t_argcontent *argcontent, char *spec, int *i)
+{
+	if (spec[*i - 2] == 'h' || spec[*i - 2] == 'l' || spec[*i - 2] == 'L'
+	|| spec[*i - 2] == 'j' || spec[*i - 2] == 'z')
+		argcontent->modificator[0] = spec[*i - 2];
+	else
+		argcontent->modificator[0] = '\0';
+	if (spec[*i - 3] == 'h' || spec[*i - 3] == 'l')
+	{
+		if (argcontent->modificator[0] != spec[*i - 3]
+		|| argcontent->modificator[0] == 'j' || argcontent->modificator[0] == 'z')
+			exit(0);
+		argcontent->modificator[1] = spec[*i - 3];
+		argcontent->modificator[2] = '\0';
+	}
+	else
+		argcontent->modificator[1] = '\0';
 }
 
 void			ft_initwpm(t_argcontent *argcontent, char *spec, int *i)
@@ -60,19 +67,7 @@ void			ft_initwpm(t_argcontent *argcontent, char *spec, int *i)
 		argcontent->precision = argcontent->precision * 10 + (spec[*i] - '0');
 		(*i)++;
 	}
-	if (spec[*i - 2] == 'h' || spec[*i - 2] == 'l')
-		argcontent->modificator[0] = spec[*i - 2];
-	else
-		argcontent->modificator[0] = '\0';
-	if (spec[*i - 3] == 'h' || spec[*i - 3] == 'l')
-	{
-		if (argcontent->modificator[0] != spec[*i - 3])
-			exit(0);
-		argcontent->modificator[1] = spec[*i - 3];
-		argcontent->modificator[2] = '\0';
-	}
-	else
-		argcontent->modificator[1] = '\0';
+	ft_getmodif(argcontent, spec, i);
 }
 
 t_argcontent	ft_getargcontent(char *spec)
@@ -89,6 +84,18 @@ t_argcontent	ft_getargcontent(char *spec)
 		ft_initwpm(&argcontent, spec, &i);
 	}
 	argcontent.type = spec[i - 1];
+	if (argcontent.type == 'O' || argcontent.type == 'D' || argcontent.type == 'U')
+	{
+		argcontent.modificator[0] = 'l';
+		argcontent.modificator[1] = 'l';
+		argcontent.modificator[2] = '\0';
+	}
+	if (argcontent.type == 'O')
+		argcontent.type = 'o';
+	else if (argcontent.type == 'D')
+		argcontent.type = 'd';
+	else if (argcontent.type == 'U')
+		argcontent.type = 'u';
 	return (argcontent);
 }
 
@@ -105,7 +112,8 @@ t_argcontent	ft_parser(char *format, long long i)
 	&& format[begin] != 'i' && format[begin] != 'o'
 	&& format[begin] != 'u' && format[begin] != 'x'
 	&& format[begin] != 'X' && format[begin] != 'f'
-	&& format[begin] != '%')
+	&& format[begin] != 'O' && format[begin] != 'D'
+	&& format[begin] != 'U' && format[begin] != '%')
 		begin++;
 	if (!(spec = (char*)malloc(begin - i + 1)))
 		exit(0);
